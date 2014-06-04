@@ -26,45 +26,14 @@ public class Puzzle {
 		
 		for(int r = 0; r < size; r++){			
 			for(int c = 0; c < size; c++){				
-				Cell cell = new Cell();
-				setCell(r, c, cell);
+				Cell cell = new Cell(cliques[ROWS][r], cliques[COLS][c], cliques[BXS][this.getBox(r, c)]);				
+				puzzle[r][c] = cell;
+				
+				cliques[ROWS][r].addCell(cell);
+				cliques[COLS][c].addCell(cell);
+				cliques[BXS][this.getBox(r, c)].addCell(cell);
 			}
 		}
-		
-        calculateUncolored();
-	}
-	
-	public Puzzle(String filename) throws IOException{
-		FileReader fr;
-        BufferedReader buff;
-        
-        try{
-        	fr = new FileReader(filename);
-            buff = new BufferedReader(fr);
-            String line = buff.readLine();
-            
-            size = line.length();
-            dimension = (int)Math.sqrt(size);
-            puzzle = new Cell[size][size];
-            
-            initializeCliques();
-            
-            for(int r = 0; r < size; r++){
-            	if(line.isEmpty())
-            		System.err.println("Invalid input file. Error line " + r);
-            	else
-            		for(int c = 0; c < size; c++){
-            			Cell cell = new Cell(line.charAt(c));
-            			setCell(r, c, cell);
-            		}
-            	line = buff.readLine();
-            }
-            
-            calculateUncolored();
-        }
-        catch(IOException ex){
-            System.err.println("Oh no! An error occurred!\n Error: " + ex);
-        }
 	}
 	
 	private void initializeCliques(){
@@ -77,38 +46,57 @@ public class Puzzle {
 		}
 	}
 	
-	private void calculateUncolored(){
-
-		for(int i = 0; i < size; i++){
-			cliques[ROWS][i].calcNumUncolored();
-			cliques[COLS][i].calcNumUncolored();
-			cliques[BXS][i].calcNumUncolored();
+	public int getBox(int r, int c){
+		if(r >= size || c >= size || r < 0 || c < 0){
+			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
+			System.exit(0);
 		}
+		
+		return c/dimension + (r/dimension * dimension);
 	}
 	
-	private void setCell(int r, int c, Cell cell){
-		puzzle[r][c] = cell;
-		
-		cliques[ROWS][r].addCell(cell);
-		cliques[COLS][c].addCell(cell);
-		cliques[BXS][this.getBox(r, c)].addCell(cell);
+	public void populatePuzzle(String filename) throws IOException{
+		FileReader fr;
+        BufferedReader buff;
+        
+        try{
+        	fr = new FileReader(filename);
+            buff = new BufferedReader(fr);
+            String line = buff.readLine();
+            
+            for(int r = 0; r < size; r++){
+            	if(line.isEmpty())
+            		System.err.println("Invalid input file. Error line " + r);
+            	else
+            		for(int c = 0; c < size; c++)
+            			setColor(r, c, line.charAt(c));
+            	line = buff.readLine();
+            }
+        }
+        catch(IOException ex){
+            System.err.println("Oh no! An error occurred!\n Error: " + ex);
+        }
 	}
 	
 	public void setColor(int r, int c, char clr){
-		puzzle[r][c].setColor(clr);
-		if(clr != '.'){
-			cliques[ROWS][r].decrementUncolored();
-			cliques[COLS][c].decrementUncolored();
-			cliques[BXS][this.getBox(r, c)].decrementUncolored();
+		if(r >= size || c >= size || r < 0 || c < 0){
+			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
+			System.exit(0);
 		}
+		
+		if(clr != '.')
+			puzzle[r][c].color(clr);
+		else
+			puzzle[r][c].uncolor();
 	}
 	
 	public char getColor(int r, int c){
+		if(r >= size || c >= size || r < 0 || c < 0){
+			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
+			System.exit(0);
+		}
+		
 		return puzzle[r][c].getColor();
-	}
-	
-	public int getBox(int r, int c){
-		return c/dimension + (r/dimension * dimension);
 	}
 	
 	public void orderCliques(){
@@ -117,9 +105,7 @@ public class Puzzle {
 			for(int j = 0; j < cliques[0].length; j++){
 				boolean found = false;
 				for(int k = 0; k < orderedCliques.size(); k++){
-					int type = Character.getNumericValue(orderedCliques.get(k).charAt(0));
-					int num = Character.getNumericValue(orderedCliques.get(k).charAt(1));
-					if(cliques[i][j].getNumUncolored() < cliques[type][num].getNumUncolored()){
+					if(cliques[i][j].getNumUncolored() < this.getClique(orderedCliques.get(k)).getNumUncolored()){
 						orderedCliques.add(k, Integer.toString(i) + j);
 						found = true;
 						break;
@@ -130,10 +116,28 @@ public class Puzzle {
 				if(!found) orderedCliques.add(label);
 			}
 		}
-		
+	}
+	
+	public Clique getClique(String label){
+		int type = Character.getNumericValue(label.charAt(0));
+		int num = Character.getNumericValue(label.charAt(1));
+		return cliques[type][num];
+	}
+	
+	public Clique[][] getCliques(){
+		return cliques;
+	}
+	
+	public ArrayList<String> getOrderedCliques(){
+		return orderedCliques;
+	}
+	
+	public String orderedCliquesToString(){
+		String oclc = "";
 		for(String c : orderedCliques){
-			System.out.print(c + "(" + cliques[Character.getNumericValue(c.charAt(0))][Character.getNumericValue(c.charAt(1))].getNumUncolored() + "), ");
+			oclc += c + "(" + getClique(c).getNumUncolored() + "), ";
 		}
+		return oclc;
 	}
 	
 	public String toString(){

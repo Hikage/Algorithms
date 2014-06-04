@@ -10,24 +10,44 @@ public class Clique {
 	public Clique(){
 		cells = new ArrayList<Cell>();
 		numUncolored = 0;
-	}
+	}	
 	
 	public void addCell(Cell c){
 		cells.add(c);
-		if(c.getColor() != '.') decrementUncolored();
+		incrementUncolored();
+	}
+	
+	public void calcNumUncolored(){
+		numUncolored = 0;
+		for (Cell c : cells)
+			if(c.getColor() == '.'){
+				incrementUncolored();
+			}
 	}
 	
 	public void decrementUncolored(){
 		numUncolored--;
 	}
 	
-	public void calcNumUncolored(){
-		numUncolored = 0;
-		for (Cell c : cells)
-			if(c.getColor() == '.') numUncolored++;
+	public void incrementUncolored(){
+		numUncolored++;
+	}
+	
+	public void addColor(char c){
+		for(Cell cell : cells)
+			cell.addValidColor(c);
+	}
+	
+	public void removeColor(char c){
+		for(Cell cell : cells)
+			cell.removeValidColor(c);
 	}
 	
 	public int getNumUncolored(){
 		return numUncolored;
+	}
+	
+	public ArrayList<Cell> getCells(){
+		return cells;
 	}
 }
