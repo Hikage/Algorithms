@@ -21,9 +21,6 @@ public class SudokuSolver {
 			sudoku = new Puzzle(3);
 			sudoku.populatePuzzle("src/sudoku/sudoku-problem2.txt");
 			System.out.println(sudoku.toString());
-
-			//order the cliques to tackle the most colored first
-			sudoku.orderCliques();
 			
 			Puzzle solution = colorPuzzle(sudoku);
 			if(solution == null)
@@ -42,11 +39,16 @@ public class SudokuSolver {
 	 * @return: the solution puzzle
 	 */
 	public static Puzzle colorPuzzle(Puzzle sudoku){
+		System.out.println("\n" + sudoku.toString());
 		if(sudoku.solved()) return sudoku;
 
-		//start with the most colored clique
-		for(String label : sudoku.getOrderedCliques()){
-			Clique clique = sudoku.getClique(label);
+		//make a copy of the puzzle's sorted cliques
+		ArrayList<Clique> orderedCliques = new ArrayList<Clique>();
+		orderedCliques.addAll(sudoku.getOrderedCliques(sudoku.getCliques()));
+		
+		//start with the most colored clique, resorting after each is completed		
+		while(!orderedCliques.isEmpty()){
+			Clique clique = orderedCliques.remove(0);
 			for(Cell cell : clique.getCells()){
 				if(cell.getColor() != '.') continue;				//skip over any cells already colored
 				
@@ -55,13 +57,15 @@ public class SudokuSolver {
 				//pull out the colors, as Java doesn't like changing data
 				ArrayList<Character> colors = new ArrayList<Character>();
 				colors.addAll(cell.getValidColors());
-				for(int i = colors.size()-1; i >= 0; i--){			//iterate backwards in case indexes change
-					cell.color(colors.get(i));
+				for(int j = colors.size()-1; j >= 0; j--){			//iterate backwards in case indexes change
+					cell.color(colors.get(j));
 					Puzzle solution = colorPuzzle(sudoku);
 					if(solution != null && solution.solved()) return solution;
 					cell.uncolor();
 				}				
 			}
+			//reorder Cliques
+			//orderedCliques = sudoku.getOrderedCliques(orderedCliques);
 		}
 		//reached the end, no solution found
 		return null;

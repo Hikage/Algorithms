@@ -94,13 +94,12 @@ public class PuzzleTest {
 		catch(IOException e) {
 			System.err.println("Error reading file: " + e.getMessage());
 		}
-		
-		puzzle.orderCliques();		
-		ArrayList<String> orderedCliques = puzzle.getOrderedCliques();
+				
+		ArrayList<Clique> orderedCliques = puzzle.getOrderedCliques(puzzle.getCliques());
 		assertEquals(orderedCliques.size(), 27);
 		for(int i = 0; i < orderedCliques.size()-1; i++){
-			assertTrue(puzzle.getClique(orderedCliques.get(i)).getNumUncolored() <= 
-					puzzle.getClique(orderedCliques.get(i+1)).getNumUncolored());
+			assertTrue(orderedCliques.get(i).getNumUncolored() <= 
+					orderedCliques.get(i+1).getNumUncolored());
 		}
 	}
 

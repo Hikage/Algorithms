@@ -21,7 +21,6 @@ public class Puzzle {
 
 	private Cell[][] puzzle;
 	private Clique[][] cliques;
-	private ArrayList<String> orderedCliques;
 	private int dimension;
 	private int size;
 	
@@ -141,25 +140,42 @@ public class Puzzle {
 	
 	/**
 	 * Orders the Cliques based on how many of their cells are uncolored (most colored first)
+	 * @param cliqueList: list of Cliques to be sorted
+	 * @return: the set of sorted Puzzle Cliques
 	 */
-	public void orderCliques(){
-		orderedCliques = new ArrayList<String>();
+	public ArrayList<Clique> getOrderedCliques(ArrayList<Clique> cliqueList){
+		ArrayList<Clique> orderedCliques = new ArrayList<Clique>();
 		for(int i = 0; i < cliques.length; i++){
 			for(int j = 0; j < cliques[0].length; j++){
 				if(cliques[i][j].getNumUncolored() == 0) continue;
 				boolean found = false;
 				for(int k = 0; k < orderedCliques.size(); k++){
-					if(cliques[i][j].getNumUncolored() < this.getClique(orderedCliques.get(k)).getNumUncolored()){
-						orderedCliques.add(k, Integer.toString(i) + j);
+					if(cliques[i][j].getNumUncolored() < orderedCliques.get(k).getNumUncolored()){
+						orderedCliques.add(k, cliques[i][j]);
 						found = true;
 						break;
 					}
 				}
 
-				String label = Integer.toString(i) + j;
-				if(!found) orderedCliques.add(label);
+				if(!found) orderedCliques.add(cliques[i][j]);
 			}
 		}
+		
+		return orderedCliques;
+	}
+	
+	/**
+	 * Overloaded method to take in 2D array format
+	 * @param cliqueList: list of Cliques to be sorted
+	 * @return: the set of sorted Puzzle Cliques
+	 */
+	public ArrayList<Clique> getOrderedCliques(Clique[][] cliqueList){
+		ArrayList<Clique> unorderedCliques = new ArrayList<Clique>();
+		for(Clique[] cliques : cliqueList)
+			for(Clique clique : cliques)
+				unorderedCliques.add(clique);
+		
+		return getOrderedCliques(unorderedCliques);
 	}
 	
 	/**
@@ -182,14 +198,6 @@ public class Puzzle {
 	}
 	
 	/**
-	 * Retrieves the set of sorted Puzzle Cliques (represented by labels)
-	 * @return: the set of sorted Puzzle Cliques
-	 */
-	public ArrayList<String> getOrderedCliques(){
-		return orderedCliques;
-	}
-	
-	/**
 	 * Determines if the Puzzle has been completed
 	 * @return: if the Puzzle is solved
 	 */
@@ -198,18 +206,6 @@ public class Puzzle {
 			for(Cell cell : rows)
 				if(cell.getColor() == '.') return false;
 		return true;
-	}
-	
-	/**
-	 * Converts orderedCliques to a string representation, for convenience and testing
-	 * @return: the string representation of orderedCliques
-	 */
-	public String orderedCliquesToString(){
-		String oclc = "";
-		for(String c : orderedCliques){
-			oclc += c + "(" + getClique(c).getNumUncolored() + "), ";
-		}
-		return oclc;
 	}
 	
 	/**
