@@ -1,5 +1,14 @@
 package sudoku;
 
+/**
+ * "Sudoku" Sudoku Solver
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * Puzzle.java
+ * Object class for puzzle-level functions and structure
+ */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +25,10 @@ public class Puzzle {
 	private int dimension;
 	private int size;
 	
-	
+	/**
+	 * Constructor class
+	 * @param d: the dimension for the puzzle; typically 3, but could also be 2
+	 */
 	public Puzzle(int d){
 		dimension = d;
 		size = (int)Math.pow(dimension, 2);
@@ -29,6 +41,7 @@ public class Puzzle {
 				Cell cell = new Cell(cliques[ROWS][r], cliques[COLS][c], cliques[BXS][this.getBox(r, c)]);				
 				puzzle[r][c] = cell;
 				
+				//add cells to their Cliques
 				cliques[ROWS][r].addCell(cell);
 				cliques[COLS][c].addCell(cell);
 				cliques[BXS][this.getBox(r, c)].addCell(cell);
@@ -36,6 +49,9 @@ public class Puzzle {
 		}
 	}
 	
+	/**
+	 * Initializes all of the Puzzle's Cliques
+	 */
 	private void initializeCliques(){
 		cliques = new Clique[3][size];
 		
@@ -46,6 +62,12 @@ public class Puzzle {
 		}
 	}
 	
+	/**
+	 * Calculates a given Cell's box
+	 * @param r: Cell's row
+	 * @param c: Cell's column
+	 * @return: the box number within the puzzle grid
+	 */
 	public int getBox(int r, int c){
 		if(r >= size || c >= size || r < 0 || c < 0){
 			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
@@ -55,6 +77,11 @@ public class Puzzle {
 		return c/dimension + (r/dimension * dimension);
 	}
 	
+	/**
+	 * Populates a puzzle from an input data file
+	 * @param filename: file to be used to build puzzle
+	 * @throws IOException
+	 */
 	public void populatePuzzle(String filename) throws IOException{
 		FileReader fr;
         BufferedReader buff;
@@ -64,6 +91,7 @@ public class Puzzle {
             buff = new BufferedReader(fr);
             String line = buff.readLine();
             
+            //one line in the file per row in the puzzle
             for(int r = 0; r < size; r++){
             	if(line.isEmpty())
             		System.err.println("Invalid input file. Error line " + r);
@@ -78,6 +106,12 @@ public class Puzzle {
         }
 	}
 	
+	/**
+	 * Sets the color of a Cell at a designated location
+	 * @param r: Cell's row
+	 * @param c: Cell's column
+	 * @param clr: color to be assigned
+	 */
 	public void setColor(int r, int c, char clr){
 		if(r >= size || c >= size || r < 0 || c < 0){
 			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
@@ -90,6 +124,12 @@ public class Puzzle {
 			puzzle[r][c].uncolor();
 	}
 	
+	/**
+	 * Retrieves the color of a Cell at a specified location
+	 * @param r: Cell's row
+	 * @param c: Cell's column
+	 * @return: the color of the Cell at the specified location
+	 */
 	public char getColor(int r, int c){
 		if(r >= size || c >= size || r < 0 || c < 0){
 			System.err.println("Invalid dimentions (" + r + "," + c + ") for size " + size);
@@ -99,6 +139,9 @@ public class Puzzle {
 		return puzzle[r][c].getColor();
 	}
 	
+	/**
+	 * Orders the Cliques based on how many of their cells are uncolored (most colored first)
+	 */
 	public void orderCliques(){
 		orderedCliques = new ArrayList<String>();
 		for(int i = 0; i < cliques.length; i++){
@@ -119,20 +162,37 @@ public class Puzzle {
 		}
 	}
 	
+	/**
+	 * Translates a Clique label into a corresponding Clique (labels are stored in orderedCliques for simplicity)
+	 * @param label: string representation of the sought-for Clique
+	 * @return: the specified Clique
+	 */
 	public Clique getClique(String label){
 		int type = Character.getNumericValue(label.charAt(0));
 		int num = Character.getNumericValue(label.charAt(1));
 		return cliques[type][num];
 	}
 	
+	/**
+	 * Retrieves the set of Puzzle Cliques
+	 * @return: the set of Puzzle Cliques
+	 */
 	public Clique[][] getCliques(){
 		return cliques;
 	}
 	
+	/**
+	 * Retrieves the set of sorted Puzzle Cliques (represented by labels)
+	 * @return: the set of sorted Puzzle Cliques
+	 */
 	public ArrayList<String> getOrderedCliques(){
 		return orderedCliques;
 	}
 	
+	/**
+	 * Determines if the Puzzle has been completed
+	 * @return: if the Puzzle is solved
+	 */
 	public boolean solved(){
 		for(Cell[] rows : puzzle)
 			for(Cell cell : rows)
@@ -140,6 +200,10 @@ public class Puzzle {
 		return true;
 	}
 	
+	/**
+	 * Converts orderedCliques to a string representation, for convenience and testing
+	 * @return: the string representation of orderedCliques
+	 */
 	public String orderedCliquesToString(){
 		String oclc = "";
 		for(String c : orderedCliques){
@@ -148,6 +212,10 @@ public class Puzzle {
 		return oclc;
 	}
 	
+	/**
+	 * Translates the Puzzle into an ASCII picture, for convenience
+	 * @return: the Puzzle's string representation
+	 */
 	public String toString(){
 		String puzz = "";
 		
