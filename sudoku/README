@@ -1,0 +1,71 @@
+Sudoku Solver
+© Brianna Shade 2014
+bshade@pdx.edu
+CS584 - Algorithms Design & Analysis
+
+This project solves Sudoku puzzles through state space search and graph coloring.
+
+
+OVERVIEW
+
+A Sudoku puzzle is one in which 9 numerals are used to represent 9 distinct symbols in a crossword-like grid.
+Typically 9x9, the rules are simple: no single character can be duplicated in any row, column, or 3x3 sub-grid.
+Example ('.' denoting empty cells):
+   53.|.7.|...
+   6..|195|...
+   .98|...|.6.
+   ---|---|---
+   8..|.6.|..3
+   4..|8.3|..1
+   7..|.2.|..6
+   ---|---|---
+   .6.|...|28.
+   ...|419|..5
+   ...|.8.|.79
+Solved:
+   534|678|912
+   672|195|348
+   198|342|567
+   ---|---|---
+   859|761|423
+   426|853|791
+   713|924|856
+   ---|---|---
+   961|537|284
+   287|419|635
+   345|286|179
+  
+   
+IMPLEMENTATION
+
+This particular implementation takes an object-oriented approach.  A new instance of a Puzzle is filled with 
+Cell objects, each storing its respective color (symbol assigned), valid options for assignments for empty cells, 
+and a set of Cliques to which each belongs.  A Clique represents a Cell's row, column, and bounding box.  These 
+must each contain distinct symbols to satisfy the rules of the puzzle.  Each Clique then has a list of its 
+associated Cells, a count of how many cells it has uncolored, and a few functions to help facilitate coloring 
+and uncoloring of cells.  The Puzzle class has a number of self-explanatory methods, the most interesting of 
+which being the sorting of Cliques.  This allows for a priority to be established, so that Cliques with the 
+greatest number of cells already colored can be tackled first.  Finally, the SudokuSolver driver runs the show, 
+creating the new objects, populating the puzzle with input data, and performing the actual graph coloring/state-
+space search.
+
+Upon establishing a new Puzzle, populating it with starting symbol ("color") assignments, the solver simply 
+performs a depth-first search, aided with the heuristic of most-colored Cliques first.  With each Cell within 
+these Cliques, a color is chosen (currently in numerical order) and assigned (the cell is "colored").  The search 
+proceeds, making subsequent assessments based on that decision.  If an invalid puzzle is discovered downstream, 
+recursion unwinds to iterate to the next color choice, following a "do/undo" scheme.  If no valid solution can 
+be found, the solver fails.  Otherwise, the solved puzzle is presented to the user.
+
+
+REMARKS
+
+This project proved to be somewhat more difficult than initially anticipated, with some sneaky bugs in the 
+coloring functions and odd recursion loops.  I don't doubt I inevitably made the project more difficult than it 
+needed to be, but it feels sound and makes structural sense.
+
+Execution time is currently prohibitively slow, suggesting a possible loop in my state-space search.  Smaller 
+puzzles complete successfully, however, with the correct solution, and further work was not possible due to time 
+constraints.
+
+
+Full code and development history is also available at https://github.com/Hikage/Algorithms
