@@ -42,6 +42,8 @@ public class CliqueTest {
 		assertEquals(clique.getNumUncolored(), 1);
 		clique.calcNumUncolored();
 		assertEquals(clique.getNumUncolored(), 1);
+		assertEquals(clique.getUncoloredCells().size(), 1);
+        assertEquals(clique.getUncoloredCells().get(0), cell);
 		
 		//instead of creating a separate test, easier here
 		clique.decrementUncolored();

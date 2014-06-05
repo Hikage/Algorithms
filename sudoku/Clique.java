@@ -91,4 +91,16 @@ public class Clique {
 	public ArrayList<Cell> getCells(){
 		return cells;
 	}
+	
+	/**
+	 * Retrieves the set of uncolored Cells within the Clique
+	 * @return: the set of uncolored Cells within the Clique
+	 */
+	public ArrayList<Cell> getUncoloredCells(){
+        ArrayList<Cell> uncoloredCells = new ArrayList<Cell>();
+        for(Cell cell : cells)
+            if(cell.getColor() == '.') uncoloredCells.add(cell);
+
+        return uncoloredCells;
+	}
 }

@@ -63,9 +63,10 @@ This project proved to be somewhat more difficult than initially anticipated, wi
 coloring functions and odd recursion loops.  I don't doubt I inevitably made the project more difficult than it 
 needed to be, but it feels sound and makes structural sense.
 
-Execution time is currently prohibitively slow, suggesting a possible loop in my state-space search.  Smaller 
-puzzles complete successfully, however, with the correct solution, and further work was not possible due to time 
-constraints.
+Execution time is currently prohibitively slow, though state-space search appears to progress as expected.  I am 
+likely missing a vital step that would speed up the search considerably.  Smaller puzzles complete successfully, 
+however, with the correct solution, and further work was not possible due to time constraints (and a crashed hard 
+drive).
 
 
 Full code and development history is also available at https://github.com/Hikage/Algorithms

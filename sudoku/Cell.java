@@ -48,13 +48,14 @@ public class Cell {
 	private void initValidColors(){
 		String colors = "123456789";
 		validColors = new ArrayList<Character>();
-		colorLoop:
-		for(int i = 0; i < colors.length(); i++){
-			for(Clique clique : cliques)
-				for(Cell cell : clique.getCells())		//check to make sure no other Cell in the Clique already has this color
-					if(cell.getColor() == colors.charAt(i)) continue colorLoop;
+		//initialize with all colors available
+		for(int i = 0; i < colors.length(); i++)
 			validColors.add(colors.charAt(i));
-		}
+
+		//check to make sure no other Cell in the Clique already has this color
+		for(Clique clique : cliques)
+			for(Cell cell : clique.getCells())
+				validColors.remove(Character.valueOf(cell.getColor()));		//no-op if not present
 	}
 	
 	/**
@@ -67,8 +68,8 @@ public class Cell {
 		
 		//Clique housekeeping
 		for(Clique clique : cliques){
-			clique.decrementUncolored();
 			clique.removeColor(c);
+			clique.decrementUncolored();
 		}
 	}
 	
