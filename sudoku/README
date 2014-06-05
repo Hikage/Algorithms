@@ -1,6 +1,4 @@
 Sudoku Solver
-© Brianna Shade 2014
-bshade@pdx.edu
 CS584 - Algorithms Design & Analysis
 
 This project solves Sudoku puzzles through state space search and graph coloring.
@@ -69,4 +67,4 @@ however, with the correct solution, and further work was not possible due to tim
 drive).
 
 
-Full code and development history is also available at https://github.com/Hikage/Algorithms
+Full code and development history is also available on GitHub upon request

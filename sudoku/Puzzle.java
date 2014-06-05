@@ -2,8 +2,6 @@ package sudoku;
 
 /**
  * "Sudoku" Sudoku Solver
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
  *
  * Puzzle.java
  * Object class for puzzle-level functions and structure

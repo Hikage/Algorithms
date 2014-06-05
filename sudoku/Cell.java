@@ -2,8 +2,6 @@ package sudoku;
 
 /**
  * "Sudoku" Sudoku Solver
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
  *
  * Cell.java
  * Houses cell data and functions

@@ -2,8 +2,6 @@ package sudoku;
 
 /**
  * "Sudoku" Sudoku Solver
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
  *
  * SudokuSolver.java
  * Driver for solving Sudoku puzzles
@@ -60,7 +58,7 @@ public class SudokuSolver {
 				ArrayList<Character> colors = cell.getValidColors();
 				for(int i = 0; i < colors.size(); i++){
 					cell.color(colors.get(i));
-		            System.out.println("\n" + sudoku.toString());
+		            //System.out.println("\n" + sudoku.toString());
 					Puzzle solution = colorPuzzle(sudoku);
 					if(solution != null && solution.solved()) return solution;
 					cell.uncolor();
