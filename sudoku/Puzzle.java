@@ -103,6 +103,7 @@ public class Puzzle {
 		orderedCliques = new ArrayList<String>();
 		for(int i = 0; i < cliques.length; i++){
 			for(int j = 0; j < cliques[0].length; j++){
+				if(cliques[i][j].getNumUncolored() == 0) continue;
 				boolean found = false;
 				for(int k = 0; k < orderedCliques.size(); k++){
 					if(cliques[i][j].getNumUncolored() < this.getClique(orderedCliques.get(k)).getNumUncolored()){
@@ -130,6 +131,13 @@ public class Puzzle {
 	
 	public ArrayList<String> getOrderedCliques(){
 		return orderedCliques;
+	}
+	
+	public boolean solved(){
+		for(Cell[] rows : puzzle)
+			for(Cell cell : rows)
+				if(cell.getColor() == '.') return false;
+		return true;
 	}
 	
 	public String orderedCliquesToString(){

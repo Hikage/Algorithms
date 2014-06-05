@@ -44,11 +44,12 @@ public class Cell {
 	}
 	
 	public void uncolor(){
+		char oldColor = color;
+		color = '.';
 		for(Clique clique : cliques){
-			clique.addColor(color);
+			clique.addColor(oldColor);
 			clique.incrementUncolored();
 		}
-		color = '.';
 		initValidColors();
 	}
 	
@@ -58,12 +59,23 @@ public class Cell {
 	}
 	
 	public void addValidColor(char c){
-		if(validColors.isEmpty() || !validColors.contains(c)){
-			for(Clique clique : cliques)
-				for(Cell cell : clique.getCells())
-					if(cell.getColor() == c) return;
+		if(validColors.contains(c)) return;
+		for(Clique clique : cliques)
+			for(Cell cell : clique.getCells())
+				if(cell.getColor() == c) return;
+
+		if(validColors.isEmpty()){
 			validColors.add(c);
+			return;
 		}
+		//keep the colors in order for proper iteration
+		for(int i = validColors.size()-1; i >= 0; i--){
+			if(c < validColors.get(i)){
+				validColors.add(i, c);
+				return;
+			}
+		}	
+		
 	}
 	
 	public char getColor(){
@@ -72,5 +84,12 @@ public class Cell {
 	
 	public ArrayList<Character> getValidColors(){
 		return validColors;
+	}
+	
+	public String vColorsToString(){
+		String vColors = "";
+		for(char c : validColors)
+			vColors += c;
+		return vColors;
 	}
 }
